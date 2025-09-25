@@ -34,9 +34,9 @@ public class Demo {
 		
 		
 			
-		String filePathToReadSubCategoryUrl = "/home/robin/eclipse-workspace/TataCliq/src/tata_cliq_sub_category_product_urls.csv";
+		String filePathToReadSubCategoryUrl = "/home/robin/eclipse-workspace/TataCliq/Url_data/tata_cliq_sub_category_product_urls.csv";
 		
-		String dataFilePath = "/home/robin/eclipse-workspace/TataCliq/src/tata_cliq_product_data.csv";
+		String dataFilePath = "/home/robin/eclipse-workspace/TataCliq/csv_data/tata_cliq_product_data.csv";
 		
 		CliqPaginationByFile cliqPaginationByFile = new CliqPaginationByFile();
 
