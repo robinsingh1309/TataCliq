@@ -46,8 +46,8 @@ public class SeleniumDemo {
 
         WebDriver driver = new ChromeDriver(options);
 
-        String inputFilePath = "/home/robin/eclipse-workspace/TataCliq/src/tata_cliq_product_urls.csv";
-        String outputFilePath = "/home/robin/eclipse-workspace/TataCliq/src/tata_cliq_sub_category_product_urls.csv";
+        String inputFilePath = "/home/robin/eclipse-workspace/TataCliq/Url_data/tata_cliq_product_urls.csv";
+        String outputFilePath = "/home/robin/eclipse-workspace/TataCliq/Url_data/tata_cliq_sub_category_product_urls.csv";
 
         Set<String> uniqueUrls = new HashSet<>();
 
