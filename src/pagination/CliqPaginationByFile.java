@@ -1,111 +1,129 @@
 package pagination;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
+import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
 import extract.DataTab;
-import modal.CliqProduct;
 import service.UrlConnect;
 
 public class CliqPaginationByFile {
 
-	private static final Logger logger = Logger.getLogger(CliqPaginationByFile.class.getName());
-	
-	private UrlConnect urlConnection;
+    private static final Logger logger = Logger.getLogger(CliqPaginationByFile.class.getName());
+    private UrlConnect urlConnection;
+    
+    private static final int MAX_RECORDS_PER_FILE = 10_000;
 
-	public CliqPaginationByFile() { urlConnection = new UrlConnect(); }
+    public CliqPaginationByFile() {
+        urlConnection = new UrlConnect();
+    }
 
-	
-	
-	public void getAllDataAndWriteCsv(String filePathName, String outputCsvFilePath) throws IOException {
+    public void getAllDataAndWriteExcel(String filePathName, String outputDirectoryPath) throws IOException {
 
-        try (
-        		BufferedReader reader = new BufferedReader(new FileReader(filePathName));
-        		BufferedWriter writer = new BufferedWriter(new FileWriter(outputCsvFilePath))
-        ) {
-        	
-        	// to keep track of how many urls have been visited from the file where the sub_categories urls are stored
-        	int count = 1;
-        	
+        try ( BufferedReader reader = new BufferedReader( new FileReader(filePathName) ) ) 
+        {
             String line;
+            int workbookCount = 0;
+            int recordCount = 0;
 
-            writer.append("Brand,Product,ProductCategory,SellingPrice,MRP,Category\n");
+            XSSFWorkbook workbook = new XSSFWorkbook();
+            Sheet sheet = createSheetWithHeader(workbook);
+            int rowNum = 1;
 
-            while ( (line = reader.readLine() ) != null) {
-
-                int page = 0;
+            while ( ( line = reader.readLine() ) != null ) 
+            {    
+                int page = 1;
                 int totalPages = 1;
 
-                while (page < totalPages) {
-
+                while (page <= totalPages && page <= 250) {
+                    
                     try {
-                    	
                         String categoryUrl = line.replaceAll("page=\\d+", "page=" + page);
                         logger.info("Fetching category URL: " + categoryUrl);
 
                         String categoryResponse = urlConnection.getJsonResponse(categoryUrl);
-                        List<CliqProduct> pageProducts = DataTab.searchedResultData(categoryResponse);
 
-                        if (pageProducts.isEmpty()) {
-                            logger.info("No products found on page " + page + ". Stopping this category.");
-                            break;
-                        }
+                        
+                        int written = DataTab.writeDataToExcel(categoryResponse, sheet, rowNum);
+                        int newRecords = written - rowNum;
+                        rowNum = written;
+                        recordCount += newRecords;
 
-                        // write each product to CSV
-                        for (CliqProduct product : pageProducts) {
-                        	
-                            writer.append(
-                            		String.format("\"%s\",\"%s\",\"%s\",%.2f,%.2f,\"%s\"\n",
-                                    product.getBrandName(),
-                                    product.getProductName(),
-                                    product.getProductCategory(),
-                                    product.getTataCliqSellingPrice(),
-                                    product.getOriginalMrp(),
-                                    product.getType()
-                            					)
-                            			);
-                        }
-
-                        // cleaning up the resource
-                        writer.flush();
-                     
-                        if (page == 0) {
+                        if (page == 1) {
                             totalPages = DataTab.countPages(categoryResponse);
                             logger.info("Total pages: " + totalPages);
                         }
+                        
+                        // Flush workbook when 10,000 records written
+                        if (recordCount >= MAX_RECORDS_PER_FILE) {
+                            
+                            String fileName = String.format("%s/data_%d.xlsx", outputDirectoryPath, workbookCount++);
+                            
+                            try (FileOutputStream out = new FileOutputStream(fileName)) {
+                                workbook.write(out);
+                                logger.info("Written file: " + fileName);
+                            }
+                            
+                            workbook.close();
+
+                            workbook = new XSSFWorkbook();
+                            sheet = createSheetWithHeader(workbook);
+                            rowNum = 1;
+                            recordCount = 0;
+                        }
 
                         page++;
-                        sleepRandom();
 
                     } catch (Exception e) {
                         logger.log(Level.SEVERE, "Error fetching data from URL: " + line + " page: " + page, e);
-                        break; 
+                        break;
                     }
                 }
                 
-                // it is just for debugging
-                System.out.println("Url Count: " + count);
-                count++;
+                if (page > 250) {
+                    logger.info("Stopped pagination at 250 pages for: " + line);
+                }
+                
+            }
+            
+            // Write remaining records if any
+            if (rowNum > 1) {
+             
+                String fileName = String.format("%s/data_%d.xlsx", outputDirectoryPath, workbookCount);
+                
+                try (FileOutputStream out = new FileOutputStream(fileName)) {
+                    workbook.write(out);
+                    logger.info("Written final file: " + fileName);
+                }
+                
+                if (workbook != null) {
+                    workbook.close();
+                }
             }
 
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Error reading file or writing CSV", e);
+            logger.log(Level.SEVERE, "Error reading file or writing Excel", e);
         }
     }
+    
+    private Sheet createSheetWithHeader(XSSFWorkbook workbook) {
+        
+        Sheet sheet = workbook.createSheet("TataCliq Data");
+        String[] headers = {"Brand", "Product", "ProductCategory", "SellingPrice", "MRP", "Category", "Image"};
 
-	
-	private void sleepRandom() {
-		try {
-			Thread.sleep(500 + (int) (Math.random() * 2000));
-		} catch (InterruptedException e) {
-			Thread.currentThread().interrupt();
-		}
-	}
-	
+        Row headerRow = sheet.createRow(0);
+        for (int i = 0; i < headers.length; i++)
+            headerRow.createCell(i).setCellValue(headers[i]);
+
+        return sheet;
+    }
+    
+    
 }

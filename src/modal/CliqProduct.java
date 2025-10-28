@@ -8,8 +8,9 @@ public class CliqProduct {
 	private double tataCliqSellingPrice;
 	private double originalMrp;
 	private String type;
+	private String imageUrl;
 
-	public CliqProduct(String brand, String product, String category, double sellingPrice, double costPrice, String type) {
+	public CliqProduct(String brand, String product, String category, double sellingPrice, double costPrice, String type, String imageUrl) {
 		
 		this.brandName = brand;
 		this.productName = product;
@@ -17,6 +18,7 @@ public class CliqProduct {
 		this.tataCliqSellingPrice = sellingPrice;
 		this.originalMrp = costPrice;
 		this.type = type;
+		this.imageUrl = imageUrl;
 
 	}
 
@@ -43,7 +45,9 @@ public class CliqProduct {
 	public String getType() {
 		return type;
 	}
-	
-	
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
 	
 }
