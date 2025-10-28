@@ -1,27 +1,10 @@
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.util.HashSet;
-import java.util.Set;
-
-import org.openqa.selenium.Proxy;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
-
-import net.lightbody.bmp.BrowserMobProxy;
-import net.lightbody.bmp.BrowserMobProxyServer;
-import net.lightbody.bmp.client.ClientUtil;
-import net.lightbody.bmp.core.har.HarRequest;
-import net.lightbody.bmp.proxy.CaptureType;
-
 /**
  * The below program will throw Java Heap memory error if you are creating many objects
  * Due to which your program can get stop in the middle itself
  * so, it is better to freeup the objects once it's purpose is done
  */
 
+/*
 public class SeleniumDemo {
 
     public static void main(String[] args) {
@@ -98,3 +81,4 @@ public class SeleniumDemo {
         proxy.stop();
     }
 }
+*/
