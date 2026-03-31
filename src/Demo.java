@@ -1,10 +1,6 @@
-import java.io.FileWriter;
 import java.io.IOException;
-import java.util.List;
 
 import pagination.CliqPaginationByFile;
-import service.CategoriesTabUrl;
-import service.UrlConnect;
 
 /**
  * 1st flow -> extract out all the urls of subCategories
@@ -16,31 +12,30 @@ public class Demo {
 	public static void main(String[] args) throws IOException, InterruptedException {
 
 		
-		UrlConnect connect = new UrlConnect();
-		
-		String response = connect.getJsonResponse("https://www.tatacliq.com/marketplacewebservices/v2/mpl/cms/desktopservice/header?format=json");
-		
-		List<String> urlsList = CategoriesTabUrl.getAllSubCategoryUrls(response);
-		
-		String filePath = "/home/robin/eclipse-workspace/TataCliq/src/tata_cliq_product_urls.csv";
-
-		try (FileWriter fileWriter = new FileWriter(filePath)) {
-
-			for (String url : urlsList) {
-				fileWriter.append(url).append("\n");
-			}
-		
-			System.out.println("URL CSV file written successfully to: " + filePath);
-		
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+        /*
+         * UrlConnect connect = new UrlConnect();
+         * 
+         * String response = connect.getJsonResponse(
+         * "https://www.tatacliq.com/marketplacewebservices/v2/mpl/cms/desktopservice/header?format=json");
+         * 
+         * List<String> urlsList = CategoriesTabUrl.getAllSubCategoryUrls(response);
+         * 
+         * String filePath = "/home/robin/eclipse-workspace/TataCliq/src/tata_cliq_product_urls.csv";
+         * 
+         * try (FileWriter fileWriter = new FileWriter(filePath)) {
+         * 
+         * for (String url : urlsList) { fileWriter.append(url).append("\n"); }
+         * 
+         * System.out.println("URL CSV file written successfully to: " + filePath);
+         * 
+         * } catch (Exception e) { e.printStackTrace(); }
+         */
 		
 		
 			
 		String filePathToReadSubCategoryUrl = "/home/robin/eclipse-workspace/TataCliq/Url_data/tata_cliq_sub_category_product_urls.csv";
 		
-		String excelDataFilePath = "/home/robin/eclipse-workspace/TataCliq/excel_data";
+		String excelDataFilePath = "/home/robin/eclipse-workspace/TataCliq/product_bean_data";
 		
 		CliqPaginationByFile cliqPaginationByFile = new CliqPaginationByFile();
 

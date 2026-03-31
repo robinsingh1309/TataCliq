@@ -115,9 +115,11 @@ public class CliqPaginationByFile {
     
     private Sheet createSheetWithHeader(XSSFWorkbook workbook) {
         
-        Sheet sheet = workbook.createSheet("TataCliq Data");
-        String[] headers = {"Brand", "Product", "ProductCategory", "SellingPrice", "MRP", "Category", "Image"};
+        Sheet sheet = workbook.createSheet("TataCliq_Data");
+//        String[] headers = {"Brand", "Product", "ProductCategory", "SellingPrice", "MRP", "Category", "Image"};
+        String[] headers = {"Product_Type", "Name", "Description", "Image_URL", "Brand"};
 
+        
         Row headerRow = sheet.createRow(0);
         for (int i = 0; i < headers.length; i++)
             headerRow.createCell(i).setCellValue(headers[i]);

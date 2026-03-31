@@ -70,13 +70,13 @@ public class DataTab {
                 }
 
                 Row row = sheet.createRow(rowNum++);
-                row.createCell(0).setCellValue(brandName);
+                
+                row.createCell(0).setCellValue(productCategory);
                 row.createCell(1).setCellValue(productName);
-                row.createCell(2).setCellValue(productCategory);
-                row.createCell(3).setCellValue(sellingPrice);
-                row.createCell(4).setCellValue(mrpPrice);
-                row.createCell(5).setCellValue(category);
-                row.createCell(6).setCellValue(productImage);
+                row.createCell(2).setCellValue(""); // for Description and this is written intentionally w.r.t ProductBean class
+                row.createCell(3).setCellValue(productImage);
+                row.createCell(4).setCellValue(brandName);
+                
             }
 
         } catch (Exception e) {

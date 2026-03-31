@@ -4,7 +4,7 @@
  * so, it is better to freeup the objects once it's purpose is done
  */
 
-
+/*
 public class SeleniumDemo {
 
     public static void main(String[] args) {
@@ -81,4 +81,5 @@ public class SeleniumDemo {
         proxy.stop();
     }
 }
+*/
 
